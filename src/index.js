@@ -146,6 +146,75 @@ async function run () {
     if (core.getInput('titleLink')) {
       args.push('--titleLink', core.getInput('titleLink'))
     }
+    if (name) {
+      args.push('--name', name)
+    }
+    if (exclude) {
+      args.push('--exclude', exclude)
+    }
+    if (tsconfig) {
+      args.push('--tsconfig', tsconfig)
+    }
+    if (entryPoints) {
+      entryPoints.forEach(entryPoint => args.push('--entryPoints', entryPoint))
+    }
+    if (resolveEntrypoints) {
+      args.push('--entryPointStrategy', 'resolve')
+    }
+    if (packagesEntrypoints) {
+      args.push('--entryPointStrategy', 'packages')
+    }
+    if (externalPattern) {
+      externalPattern.forEach(pattern => args.push('--externalPattern', pattern))
+    }
+    if (excludeExternals) {
+      args.push('--excludeExternals')
+    }
+    if (excludeNotDocumented) {
+      args.push('--excludeNotDocumented')
+    }
+    if (excludeNotDocumentedKinds) {
+      excludeNotDocumentedKinds.forEach(kind => args.push('--excludeNotDocumentedKinds', kind))
+    }
+    if (excludeInternal) {
+      args.push('--excludeInternal')
+    }
+    if (excludePrivate) {
+      args.push('--excludePrivate')
+    }
+    if (excludeProtected) {
+      args.push('--excludeProtected')
+    }
+    if (excludeReferences) {
+      args.push('--excludeReferences')
+    }
+    if (excludeCategories) {
+      excludeCategories.forEach(category => args.push('--excludeCategories', category))
+    }
+    if (includeVersion) {
+      args.push('--includeVersion')
+    }
+    if (disableSources) {
+      args.push('--disableSources')
+    }
+    if (sourceLinkTemplate) {
+      args.push('--sourceLinkTemplate', sourceLinkTemplate)
+    }
+    if (gitRevision) {
+      args.push('--gitRevision', gitRevision)
+    }
+    if (gitRemote) {
+      args.push('--gitRemote', gitRemote)
+    }
+    if (disableGit) {
+      args.push('--disableGit')
+    }
+    if (readme) {
+      args.push('--readme', readme)
+    }
+    if (stripYamlFrontmatter) {
+      args.push('--stripYamlFrontmatter')
+    }
 
     core.info('📝 Generating documentation')
     await exec.exec(cmd, args)
