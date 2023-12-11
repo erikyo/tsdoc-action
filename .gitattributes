@@ -1,0 +1,4 @@
+# exclude vendored and generated files
+package-lock.json linguist-generated
+/lib/** linguist-generated
+/docs/** linguist-documentation

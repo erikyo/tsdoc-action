@@ -15,9 +15,10 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
-    "package": "ncc build src/index.ts -o lib --source-map --license LICENSE",
-    "lint": "eslint ./src --fix",
     "build-all": "npm run lint && npm run build && npm run package",
+    "lint": "eslint ./src --fix",
+    "package": "ncc build src/index.ts -o lib --license LICENSE",
+    "prepare": "husky install",
     "tsdoc": "npx typedoc src/*"
   },
   "repository": {
@@ -46,6 +47,7 @@
     "@typescript-eslint/parser": "^6.14.0",
     "@vercel/ncc": "^0.38.1",
     "eslint": "^8.55.0",
+    "husky": "^8.0.3",
     "typescript": "^5.3.3"
   }
 }

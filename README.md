@@ -4,7 +4,7 @@
 
 This is a GitHub Action to build your TypeScript documentation with [TypeDoc](https://typedoc.org/). This action can easily be combined with other deployment actions, in order to publish the generated documentation to, for example, [GitHub Pages](https://pages.github.com). TypeDoc [templates](https://typedoc.org/guides/options/) are also supported.
 
-This action is a fork of the [jsdoc-action](https://github.com/andstor/jsdoc-action) by [André Storhaug](https://github.com/andstor). The repository URL for this fork is [https://github.com/erikyo/tsdoc-action](https://github.com/erikyo/tsdoc-action).
+This action is a fork of the [jsdoc-action](https://github.com/andstor/jsdoc-action) by [André Storhaug](https://github.com/andstor).
 
 The following example [workflow step](https://help.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow) will generate documentation for all source files in the `./src` directory and output the built files to the `./out` directory.
 
@@ -29,29 +29,28 @@ The tsdoc-action is a JavaScript action and is supported on both Linux, MacOS, a
 
 The following input variables options can/must be configured:
 
-|Input variable|Necessity|Description|Default|
-|----|----|----|----|
-|`source_dir`|Optional|Source directory to build documentation from.||
-|`output_dir`|Optional|Output folder for the generated documentation.|`./out`|
-|`recurse`|Optional|Recurse into subdirectories when scanning for source files.|`false`|
-|`config_file`|Optional|The path to a TypeDoc configuration file.||
-|`template`|Optional|The TypeDoc template or theme to install. Will run `npm install template`.||
-|`template_dir`|Optional|The relative location of the template files directory within the template package.||
-|`front_page`|Optional|The path to a Markdown file to be used as a the front page. Normally `README.md`.||
-|`excludeInternal`|Optional|Removes symbols annotated with the `@internal` doc tag.|`true`|
-|`excludePrivate`|Optional|Removes private class members from the generated documentation.|`false`|
-|`excludeProtected`|Optional|Removes protected class members from the generated documentation.|`false`|
-|`excludeReferences`|Optional|Removes re-exports of a symbol already included in the documentation from the documentation.|`false`|
-|`excludeCategories`|Optional|Removes reflections associated with any of the given categories.||
-|`name`|Optional|Set the name of the project that will be used in the header of the template.|Package name from package.json|
-|`includeVersion`|Optional|Includes the version according to package.json in generated documentation.|`false`|
-|`disableSources`|Optional|Disables capturing where reflections are declared when converting input.|`false`|
-|`sourceLinkTemplate`|Optional|Specify a link template to be used when generating source urls.||
-|`gitRevision`|Optional|Use specified revision or branch instead of the last revision for linking to source files.||
-|`gitRemote`|Optional|Use the specified git remote instead of origin for linking to source files.||
-|`disableGit`|Optional|Prevents TypeDoc from using Git to try to determine if sources can be linked.|`false`|
-|`readme`|Optional|Path to the readme file that should be displayed on the index page.||
-|`stripYamlFrontmatter`|Optional|Remove YAML frontmatter from the readme file displayed on the main page.|`false`|
+| Input variable         |Necessity|Description|Default|
+|------------------------|----|----|----|
+| `source_dir`           |Optional|Source directory to build documentation from.||
+| `output_dir`           |Optional|Output folder for the generated documentation.|`./out`|
+| `config_file`          |Optional|The path to a TypeDoc configuration file.||
+| `theme`                |Optional|The TypeDoc template or theme to install. Will run `npm install template`.||
+| `theme_dir`            |Optional|The relative location of the template files directory within the template package.||
+| `front_page`           |Optional|The path to a Markdown file to be used as a the front page. Normally `README.md`.||
+| `excludeInternal`      |Optional|Removes symbols annotated with the `@internal` doc tag.|`true`|
+| `excludePrivate`       |Optional|Removes private class members from the generated documentation.|`false`|
+| `excludeProtected`     |Optional|Removes protected class members from the generated documentation.|`false`|
+| `excludeReferences`    |Optional|Removes re-exports of a symbol already included in the documentation from the documentation.|`false`|
+| `excludeCategories`    |Optional|Removes reflections associated with any of the given categories.||
+| `name`                 |Optional|Set the name of the project that will be used in the header of the template.|Package name from package.json|
+| `includeVersion`       |Optional|Includes the version according to package.json in generated documentation.|`false`|
+| `disableSources`       |Optional|Disables capturing where reflections are declared when converting input.|`false`|
+| `sourceLinkTemplate`   |Optional|Specify a link template to be used when generating source urls.||
+| `gitRevision`          |Optional|Use specified revision or branch instead of the last revision for linking to source files.||
+| `gitRemote`            |Optional|Use the specified git remote instead of origin for linking to source files.||
+| `disableGit`           |Optional|Prevents TypeDoc from using Git to try to determine if sources can be linked.|`false`|
+| `readme`               |Optional|Path to the readme file that should be displayed on the index page.||
+| `stripYamlFrontmatter` |Optional|Remove YAML frontmatter from the readme file displayed on the main page.|`false`|
 
 ## Templates 💅
 
@@ -75,12 +74,11 @@ An example for deploying TypeDoc generated documentation to GitHub Pages with [a
 This tsdoc-action workflow configuration uses the [default](https://typedoc.org/guides/themes/default/) TypeDoc template and uses the root `README.md` file as the front page.
 
 ```yml
-name: GitHub pages
+# Simple workflow for deploying static content to GitHub Pages
+name: TSDoc Actions
 
 on:
-  push:
-    branches:
-      - master
+  release:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -89,26 +87,49 @@ permissions:
   contents: read
   pages: write
   id-token: write
-  
+
 jobs:
+  # Single deploy job since we're just deploying
   deploy:
+    name: Deploy Documentation
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Build
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
+
+      - name: TSDoc Action
         uses: erikyo/tsdoc-action@v1
         with:
           source_dir: ./src
-          output_dir: ./out
+          output_dir: ./docs
           front_page: README.md
+          recurse: true
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          publish_dir: ./out
+          # Upload entire repository
+          path: './docs'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
 ```
 
 ## License
