@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: TSDoc Action
-        uses: erikyo/tsdoc-action@v1.0.0
+        uses: erikyo/tsdoc-action@v1.0.1
         with:
           source_dir: ./src
           recurse: true
