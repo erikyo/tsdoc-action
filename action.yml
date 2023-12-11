@@ -1,0 +1,108 @@
+name: 'TSDoc Action'
+description: 'GitHub Action to build TSDoc documentation'
+author: 'Erik Golinelli'
+branding:
+  icon: 'file-text'
+  color: 'yellow'
+
+inputs:
+  source_dir:
+    description: 'Source directory to build documentation from'
+    required: false
+  output_dir:
+    description: 'Output folder for the generated documentation'
+    required: false
+  recurse:
+    description: 'Recurse into subdirectories when scanning for source files'
+    required: false
+  config_file:
+    description: 'The path to a TSDoc configuration file'
+    required: false
+  template:
+    description: 'The TSDoc template or theme to install'
+    required: false
+  template_name:
+    description: 'This input variable is deprecated in favour of "template"'
+    required: false
+  template_dir:
+    description: 'The relative location of the template files within the template package'
+    required: false
+  front_page:
+    description: 'The path to a Markdown file to be used as the front page'
+    required: false
+  lightHighlightTheme:
+    description: 'The Shiki theme to be used to highlight code snippets in light mode'
+    required: false
+  darkHighlightTheme:
+    description: 'The Shiki theme to be used to highlight code snippets in dark mode'
+    required: false
+  customCss:
+    description: 'Extra CSS file to be copied into the assets directory and referenced by the theme'
+    required: false
+  markedOptions:
+    description: 'Options to be forwarded to Marked when parsing doc comments'
+    required: false
+  basePath:
+    description: 'Base path to be used when displaying file paths'
+    required: false
+  cname:
+    description: 'Text for creating a CNAME file in the output directory'
+    required: false
+  sourceLinkExternal:
+    description: 'Treat source links as external links that open in a new tab when generating HTML'
+    required: false
+  htmlLang:
+    description: 'Sets the lang attribute in TypeDocs HTML output'
+    required: false
+  githubPages:
+    description: 'Automatically add a .nojekyll file to the output directory to prevent GitHub Pages from processing your documentation site using Jekyll'
+    required: false
+  cacheBust:
+    description: 'Include the generation time in <script> and <link> tags to JS/CSS assets to prevent assets from a previous build of the documentation from being used'
+    required: false
+  gaID:
+    description: 'Set the Google Analytics tracking ID and activate tracking code'
+    required: false
+  hideParameterTypesInTitle:
+    description: 'Hide parameter types in the signature "title" for easier scanning'
+    required: false
+  hideGenerator:
+    description: 'Do not print the TypeDoc link at the end of the page'
+    required: false
+  searchInComments:
+    description: 'Enables searching comment text in the generated documentation site'
+    required: false
+  cleanOutputDir:
+    description: 'Prevent TypeDoc from cleaning the output directory specified with --out'
+    required: false
+  titleLink:
+    description: 'Link the title in the header points to'
+    required: false
+  navigationLinks:
+    description: 'Additional links to be included in the page header'
+    required: false
+  sidebarLinks:
+    description: 'Additional links to be included in the page sidebar'
+    required: false
+  navigation:
+    description: 'Configuration for determining if groups/categories will be included in the primary navigation pane'
+    required: false
+  categorizeByGroup:
+    description: 'Affects if groups/categories will be included in the primary navigation pane'
+    required: false
+  navigationLeaves:
+    description: 'Specifies namespaces/modules which should not be expandable in the navigation tree'
+    required: false
+  visibilityFilters:
+    description: 'Specifies the available filters when viewing a page'
+    required: false
+  searchCategoryBoosts:
+    description: 'Configure the search to increase the relevance of items in a given category'
+    required: false
+  searchGroupBoosts:
+    description: 'Configure the search to increase the relevance of items in a given group'
+    required: false
+
+runs:
+  using: 'node16'
+  main: 'src/index.js'
