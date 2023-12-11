@@ -2,8 +2,19 @@
   "name": "tsdoc-action",
   "version": "1.0.0",
   "description": "GitHub Action to build typedoc documentation",
-  "main": "src/index.js",
+  "author": {
+    "name": "Erik Golinelli",
+    "email": "erik@codekraft.it",
+    "url": "https://github.com/erikyo"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/erikyo/tsdoc-action/issues"
+  },
+  "homepage": "https://github.com/erikyo/tsdoc-action#readme",
+  "main": "lib/main.js",
   "scripts": {
+    "build": "tsc",
     "lint": "eslint src --fix",
     "tsdoc": "npx typedoc src/*"
   },
@@ -20,26 +31,18 @@
     "JavaScript",
     "TypeScript"
   ],
-  "author": {
-    "name": "Erik Golinelli",
-    "email": "erik@codekraft.it",
-    "url": "https://github.com/erikyo"
-  },
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/erikyo/tsdoc-action/issues"
-  },
-  "homepage": "https://github.com/erikyo/tsdoc-action#readme",
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@actions/exec": "^1.1.1",
     "typedoc": "^0.25.4"
   },
   "devDependencies": {
+    "@types/node": "^18.19.3",
     "eslint": "^8.55.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-n": "^16.4.0",
-    "eslint-plugin-promise": "^6.1.1"
+    "eslint-plugin-promise": "^6.1.1",
+    "typescript": "^5.3.3"
   }
 }

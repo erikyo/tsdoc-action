@@ -72,8 +72,7 @@ async function run () {
     const args = [typedocPath]
 
     if (source_dir) {
-      const srcPath = path.join(GITHUB_WORKSPACE, source_dir)
-      args.push(srcPath)
+      args.push(source_dir)
     }
     if (output_dir) {
       args.push('--out', path.join(GITHUB_WORKSPACE, output_dir))
@@ -83,7 +82,7 @@ async function run () {
       args.push('--tsconfig', configPath)
     }
     if (theme) {
-      args.push('--theme', template)
+      args.push('--theme', theme)
     }
     if (template_dir) {
       args.push('--template_dir', path.join(GITHUB_WORKSPACE, '../node_modules/', templateName, template_dir))

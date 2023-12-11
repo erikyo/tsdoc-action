@@ -1,5 +1,9 @@
 # Editors
 .vscode
+.idea
+
+#modules
+node_modules
 
 # Logs
 logs
