@@ -71,6 +71,9 @@ async function run () {
     if (template) {
       templateName = await installer.installTemplate(template)
     }
+    if (template_dir) {
+      args.push('--template_dir', path.join(GITHUB_WORKSPACE, template_dir))
+    }
 
     const typedocPath = path.join(__dirname, '../node_modules/typedoc/bin/typedoc')
 
@@ -90,6 +93,9 @@ async function run () {
     }
     if (template) {
       args.push('--theme', template)
+    }
+    if (template_dir) {
+      args.push('--template_dir', path.join(GITHUB_WORKSPACE, template_dir))
     }
     if (front_page) {
       const readmePath = path.join(GITHUB_WORKSPACE, front_page)
