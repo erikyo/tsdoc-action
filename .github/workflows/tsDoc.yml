@@ -29,8 +29,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build Docs
-        uses: erikyo/tsdoc-action@v0
+      - name: TSDoc Action
+        uses: erikyo/tsdoc-action@0.0.3
         with:
           source_dir: ./src
           recurse: true
