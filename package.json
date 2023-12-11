@@ -16,9 +16,8 @@
   "scripts": {
     "build": "tsc",
     "package": "ncc build src/index.ts -o lib --source-map --license LICENSE",
-    "package-typedoc": "ncc build src/typedoc.ts -o lib/typedoc -a",
     "lint": "eslint ./src --fix",
-    "build-all": "npm run lint && npm run build && npm run package && npm run package-typedoc",
+    "build-all": "npm run lint && npm run build && npm run package",
     "tsdoc": "npx typedoc src/*"
   },
   "repository": {
@@ -35,10 +34,10 @@
     "TypeScript"
   ],
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
     "@actions/core": "^1.10.1",
     "@actions/exec": "^1.1.1",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
     "typedoc": "^0.25.4"
   },
   "devDependencies": {

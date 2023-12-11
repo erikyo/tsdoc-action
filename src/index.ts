@@ -67,14 +67,18 @@ async function run () {
       }
     }
 
+
+   /**
+    * Install typedoc
+    */
+    await exec('npm', ['i', 'typedoc'])
+
     if (theme) {
       templateName = await installTemplate(theme)
     }
 
-    const typedocPath = path.join(__dirname, '../lib/typedoc/index.js')
-
-    const cmd = 'node'
-    const args = [typedocPath]
+    const cmd = 'npx typedoc'
+    const args = []
 
     if (source_dir) {
       args.push(source_dir)
