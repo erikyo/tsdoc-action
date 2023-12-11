@@ -71,7 +71,7 @@ async function run () {
       templateName = await installTemplate(theme)
     }
 
-    const typedocPath = path.join(__dirname, '../node_modules/typedoc/bin/typedoc')
+    const typedocPath = path.join(__dirname, '../lib/typedoc/index.js')
 
     const cmd = 'node'
     const args = [typedocPath]

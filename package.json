@@ -16,7 +16,9 @@
   "scripts": {
     "build": "tsc",
     "package": "ncc build src/index.ts -o lib --source-map --license LICENSE",
-    "lint": "eslint src --fix",
+    "package-typedoc": "ncc build src/typedoc.ts -o lib/typedoc -a",
+    "lint": "eslint ./src --fix",
+    "build-all": "npm run lint && npm run build && npm run package && npm run package-typedoc",
     "tsdoc": "npx typedoc src/*"
   },
   "repository": {
