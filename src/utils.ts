@@ -9,7 +9,7 @@ import util from "util";
  * @returns {Promise<string>} - The package name.
  *
  */
-export default async function getPackageName (filePath) {
+export default async function getPackageName (filePath: string): Promise<string> {
   let name = ''
   const readFile = util.promisify(fs.readFile)
   const fileContents = await readFile(filePath, 'utf8')
@@ -17,7 +17,7 @@ export default async function getPackageName (filePath) {
     const data = JSON.parse(fileContents)
     name = data.name
   } catch (error) {
-    setFailed('There was an error reading "name" entry in package.json file')
+    setFailed('🔴 There was an error reading "name" entry in package.json file')
   }
   return name
 }
