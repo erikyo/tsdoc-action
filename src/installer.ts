@@ -1,8 +1,8 @@
-const core = require('@actions/core')
-const exec = require('@actions/exec')
-const fs = require('fs')
-const path = require('path')
-const utils = require('./utils')
+import * as core from '@actions/core'
+import * as exec from '@actions/exec'
+import fs from "fs";
+import path from "path";
+import getPackageName from "./utils";
 
 /**
  * Installs a TSDoc template or theme by executing `npm install template/theme --production`.
@@ -11,7 +11,7 @@ const utils = require('./utils')
  * @async
  * @returns {Promise<string>} The name of the installed template or theme.
  */
-async function installTemplate (template) {
+export default async function installTemplate (template) {
   let templateName = ''
   const actionDir = path.join(__dirname, '../')
   core.debug(`actionDir: ${actionDir}`)
@@ -21,8 +21,12 @@ async function installTemplate (template) {
   core.info(`Installing TSDoc template/theme: ${template}`)
   core.debug(`Command: ${cmd} ${args}`)
 
-  const options = {}
-  options.cwd = actionDir
+  const options = {
+    cwd: actionDir,
+    options: {},
+    listeners : {}
+  }
+
   await exec.exec(cmd, args, options)
 
   let lsOutput = ''
@@ -42,11 +46,7 @@ async function installTemplate (template) {
   const packageLocation = lsOutput.trim() // path/to/template
 
   const filePath = path.join(packageLocation + '/package.json')
-  templateName = await utils.getPackageName(filePath)
+  templateName = await getPackageName(filePath)
 
   return templateName
-}
-
-module.exports = {
-  installTemplate
 }

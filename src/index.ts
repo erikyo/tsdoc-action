@@ -1,9 +1,14 @@
-const core = require('@actions/core')
-const exec = require('@actions/exec')
-const fs = require('fs').promises
-const path = require('path')
-const installer = require('./installer')
+import * as core from '@actions/core'
+import * as exec from '@actions/exec'
+import fs from "fs";
+import path from "path";
+import installTemplate from "./installer";
 
+/**
+ * Runs the documentation generation process.
+ * @async
+ * @return {void}
+ */
 async function run () {
   try {
     let templateName
@@ -45,7 +50,7 @@ async function run () {
     if (source_dir) {
       try {
         const srcPath = path.join(GITHUB_WORKSPACE, source_dir)
-        await fs.access(srcPath)
+        await fs.promises.access(srcPath)
       } catch (error) {
         core.setFailed('⛔️ Source directory does not exist')
         return
@@ -55,7 +60,7 @@ async function run () {
     if (config_file) {
       try {
         const configPath = path.join(GITHUB_WORKSPACE, config_file)
-        await fs.access(configPath)
+        await fs.promises.access(configPath)
       } catch (error) {
         core.setFailed('⛔️ Config file does not exist')
         return
@@ -63,7 +68,7 @@ async function run () {
     }
 
     if (theme) {
-      templateName = await installer.installTemplate(theme)
+      templateName = await installTemplate(theme)
     }
 
     const typedocPath = path.join(__dirname, '../node_modules/typedoc/bin/typedoc')
