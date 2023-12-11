@@ -1,6 +1,6 @@
-import * as core from '@actions/core'
-import * as exec from '@actions/exec'
-import fs from "fs";
+import { getInput, getMultilineInput, setFailed, info } from '@actions/core'
+import exec from '@actions/exec'
+import { access } from 'node:fs/promises';
 import path from "path";
 import installTemplate from "./installer";
 
@@ -15,44 +15,44 @@ async function run () {
 
     const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE
 
-    const source_dir = core.getInput('source_dir')
-    const output_dir = core.getInput('output_dir')
-    const config_file = core.getInput('config_file')
-    const theme = core.getInput('theme')
-    const template_dir = core.getInput('template_dir')
-    const front_page = core.getInput('front_page')
+    const source_dir = getInput('source_dir')
+    const output_dir = getInput('output_dir')
+    const config_file = getInput('config_file')
+    const theme = getInput('theme')
+    const template_dir = getInput('template_dir')
+    const front_page = getInput('front_page')
 
-    const name = core.getInput('name')
-    const exclude = core.getInput('exclude')
-    const tsconfig = core.getInput('tsconfig')
-    const entryPoints = core.getMultilineInput('entryPoints')
-    const entryPointStrategy = core.getInput('entryPointStrategy')
+    const name = getInput('name')
+    const exclude = getInput('exclude')
+    const tsconfig = getInput('tsconfig')
+    const entryPoints = getMultilineInput('entryPoints')
+    const entryPointStrategy = getInput('entryPointStrategy')
     const resolveEntrypoints = entryPointStrategy === 'resolve'
     const packagesEntrypoints = entryPointStrategy === 'packages'
-    const externalPattern = core.getMultilineInput('externalPattern')
-    const excludeExternals = core.getInput('excludeExternals')
-    const excludeNotDocumented = core.getInput('excludeNotDocumented')
-    const excludeNotDocumentedKinds = core.getMultilineInput('excludeNotDocumentedKinds')
-    const excludeInternal = core.getInput('excludeInternal')
-    const excludePrivate = core.getInput('excludePrivate')
-    const excludeProtected = core.getInput('excludeProtected')
-    const excludeReferences = core.getInput('excludeReferences')
-    const excludeCategories = core.getMultilineInput('excludeCategories')
-    const includeVersion = core.getInput('includeVersion')
-    const disableSources = core.getInput('disableSources')
-    const sourceLinkTemplate = core.getInput('sourceLinkTemplate')
-    const gitRevision = core.getInput('gitRevision')
-    const gitRemote = core.getInput('gitRemote')
-    const disableGit = core.getInput('disableGit')
-    const readme = core.getInput('readme')
-    const stripYamlFrontmatter = core.getInput('stripYamlFrontmatter')
+    const externalPattern = getMultilineInput('externalPattern')
+    const excludeExternals = getInput('excludeExternals')
+    const excludeNotDocumented = getInput('excludeNotDocumented')
+    const excludeNotDocumentedKinds = getMultilineInput('excludeNotDocumentedKinds')
+    const excludeInternal = getInput('excludeInternal')
+    const excludePrivate = getInput('excludePrivate')
+    const excludeProtected = getInput('excludeProtected')
+    const excludeReferences = getInput('excludeReferences')
+    const excludeCategories = getMultilineInput('excludeCategories')
+    const includeVersion = getInput('includeVersion')
+    const disableSources = getInput('disableSources')
+    const sourceLinkTemplate = getInput('sourceLinkTemplate')
+    const gitRevision = getInput('gitRevision')
+    const gitRemote = getInput('gitRemote')
+    const disableGit = getInput('disableGit')
+    const readme = getInput('readme')
+    const stripYamlFrontmatter = getInput('stripYamlFrontmatter')
 
     if (source_dir) {
       try {
         const srcPath = path.join(GITHUB_WORKSPACE, source_dir)
-        await fs.promises.access(srcPath)
+        await access(srcPath)
       } catch (error) {
-        core.setFailed('⛔️ Source directory does not exist')
+        setFailed('⛔️ Source directory does not exist')
         return
       }
     }
@@ -60,9 +60,9 @@ async function run () {
     if (config_file) {
       try {
         const configPath = path.join(GITHUB_WORKSPACE, config_file)
-        await fs.promises.access(configPath)
+        await access(configPath)
       } catch (error) {
-        core.setFailed('⛔️ Config file does not exist')
+        setFailed('⛔️ Config file does not exist')
         return
       }
     }
@@ -96,53 +96,53 @@ async function run () {
       const readmePath = path.join(GITHUB_WORKSPACE, front_page)
       args.push('--readme', readmePath)
     }
-    if (core.getInput('lightHighlightTheme')) {
-      args.push('--lightHighlightTheme', core.getInput('lightHighlightTheme'))
+    if (getInput('lightHighlightTheme')) {
+      args.push('--lightHighlightTheme', getInput('lightHighlightTheme'))
     }
-    if (core.getInput('darkHighlightTheme')) {
-      args.push('--darkHighlightTheme', core.getInput('darkHighlightTheme'))
+    if (getInput('darkHighlightTheme')) {
+      args.push('--darkHighlightTheme', getInput('darkHighlightTheme'))
     }
-    if (core.getInput('customCss')) {
-      args.push('--customCss', path.join(GITHUB_WORKSPACE, core.getInput('customCss')))
+    if (getInput('customCss')) {
+      args.push('--customCss', path.join(GITHUB_WORKSPACE, getInput('customCss')))
     }
-    if (core.getInput('markedOptions')) {
-      args.push('--markedOptions', core.getInput('markedOptions'))
+    if (getInput('markedOptions')) {
+      args.push('--markedOptions', getInput('markedOptions'))
     }
-    if (core.getInput('basePath')) {
-      args.push('--basePath', core.getInput('basePath'))
+    if (getInput('basePath')) {
+      args.push('--basePath', getInput('basePath'))
     }
-    if (core.getInput('cname')) {
-      args.push('--cname', core.getInput('cname'))
+    if (getInput('cname')) {
+      args.push('--cname', getInput('cname'))
     }
-    if (core.getInput('sourceLinkExternal')) {
+    if (getInput('sourceLinkExternal')) {
       args.push('--sourceLinkExternal')
     }
-    if (core.getInput('htmlLang')) {
-      args.push('--htmlLang', core.getInput('htmlLang'))
+    if (getInput('htmlLang')) {
+      args.push('--htmlLang', getInput('htmlLang'))
     }
-    if (core.getInput('githubPages')) {
-      args.push('--githubPages', core.getInput('githubPages'))
+    if (getInput('githubPages')) {
+      args.push('--githubPages', getInput('githubPages'))
     }
-    if (core.getInput('cacheBust')) {
+    if (getInput('cacheBust')) {
       args.push('--cacheBust')
     }
-    if (core.getInput('gaID')) {
-      args.push('--gaID', core.getInput('gaID'))
+    if (getInput('gaID')) {
+      args.push('--gaID', getInput('gaID'))
     }
-    if (core.getInput('hideParameterTypesInTitle')) {
-      args.push('--hideParameterTypesInTitle', core.getInput('hideParameterTypesInTitle'))
+    if (getInput('hideParameterTypesInTitle')) {
+      args.push('--hideParameterTypesInTitle', getInput('hideParameterTypesInTitle'))
     }
-    if (core.getInput('hideGenerator')) {
+    if (getInput('hideGenerator')) {
       args.push('--hideGenerator')
     }
-    if (core.getInput('searchInComments')) {
+    if (getInput('searchInComments')) {
       args.push('--searchInComments')
     }
-    if (core.getInput('cleanOutputDir')) {
-      args.push('--cleanOutputDir', core.getInput('cleanOutputDir'))
+    if (getInput('cleanOutputDir')) {
+      args.push('--cleanOutputDir', getInput('cleanOutputDir'))
     }
-    if (core.getInput('titleLink')) {
-      args.push('--titleLink', core.getInput('titleLink'))
+    if (getInput('titleLink')) {
+      args.push('--titleLink', getInput('titleLink'))
     }
     if (name) {
       args.push('--name', name)
@@ -214,12 +214,12 @@ async function run () {
       args.push('--stripYamlFrontmatter')
     }
 
-    core.info('📝 Generating documentation')
+    info('📝 Generating documentation')
     await exec.exec(cmd, args)
 
-    core.info(`🎉 Documentation 📖 has been generated to the ${output_dir} folder 📁`)
+    info(`🎉 Documentation 📖 has been generated to the ${output_dir} folder 📁`)
   } catch (error) {
-    core.setFailed(error.message)
+    setFailed(error.message)
   }
 }
 
