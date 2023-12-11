@@ -2,8 +2,8 @@ name: 'TSDoc Action'
 description: 'GitHub Action to build TSDoc documentation'
 author: 'Erik Golinelli'
 branding:
-  icon: 'file-text'
-  color: 'yellow'
+  icon: 'book-open'
+  color: 'blue'
 
 inputs:
   source_dir:
