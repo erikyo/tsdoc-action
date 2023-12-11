@@ -87,7 +87,7 @@ async function run () {
       args.push('--theme', template)
     }
     if (template_dir) {
-      args.push('--template_dir', path.join(GITHUB_WORKSPACE, '../node_modules/', templateName, template_dir);
+      args.push('--template_dir', path.join(GITHUB_WORKSPACE, '../node_modules/', templateName, template_dir));
     }
     if (front_page) {
       const readmePath = path.join(GITHUB_WORKSPACE, front_page)
