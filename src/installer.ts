@@ -1,6 +1,5 @@
-import * as core from '@actions/core'
-import * as exec from '@actions/exec'
-import fs from "fs";
+import {debug, info} from '@actions/core'
+import {exec} from '@actions/exec'
 import path from "path";
 import getPackageName from "./utils";
 
@@ -14,12 +13,12 @@ import getPackageName from "./utils";
 export default async function installTemplate (template) {
   let templateName = ''
   const actionDir = path.join(__dirname, '../')
-  core.debug(`actionDir: ${actionDir}`)
+  debug(`actionDir: ${actionDir}`)
 
   const cmd = 'npm'
   const args = ['install', template, '--production']
-  core.info(`Installing TSDoc template/theme: ${template}`)
-  core.debug(`Command: ${cmd} ${args}`)
+  info(`Installing TSDoc template/theme: ${template}`)
+  debug(`Command: ${cmd} ${args}`)
 
   const options = {
     cwd: actionDir,
@@ -27,7 +26,7 @@ export default async function installTemplate (template) {
     listeners : {}
   }
 
-  await exec.exec(cmd, args, options)
+  await exec(cmd, args, options)
 
   let lsOutput = ''
   let lsError = ''
@@ -40,9 +39,9 @@ export default async function installTemplate (template) {
     }
   }
 
-  await exec.exec('npm', ['ls', template, '-p'], options)
-  core.debug(`Template/theme location: ${lsOutput}`)
-  if (lsError) core.info(`Error: ${lsError}`)
+  await exec('npm', ['ls', template, '-p'], options)
+  debug(`Template/theme location: ${lsOutput}`)
+  if (lsError) info(`Error: ${lsError}`)
   const packageLocation = lsOutput.trim() // path/to/template
 
   const filePath = path.join(packageLocation + '/package.json')

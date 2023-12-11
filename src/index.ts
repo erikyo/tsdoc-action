@@ -1,5 +1,5 @@
 import { getInput, getMultilineInput, setFailed, info } from '@actions/core'
-import exec from '@actions/exec'
+import { exec } from '@actions/exec'
 import { access } from 'node:fs/promises';
 import path from "path";
 import installTemplate from "./installer";
@@ -215,7 +215,7 @@ async function run () {
     }
 
     info('📝 Generating documentation')
-    await exec.exec(cmd, args)
+    await exec(cmd, args)
 
     info(`🎉 Documentation 📖 has been generated to the ${output_dir} folder 📁`)
   } catch (error) {

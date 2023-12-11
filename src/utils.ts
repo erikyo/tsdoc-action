@@ -1,4 +1,4 @@
-import * as core from '@actions/core'
+import {setFailed} from '@actions/core'
 import fs from "fs";
 import util from "util";
 
@@ -17,7 +17,7 @@ export default async function getPackageName (filePath) {
     const data = JSON.parse(fileContents)
     name = data.name
   } catch (error) {
-    core.setFailed('There was an error reading "name" entry in package.json file')
+    setFailed('There was an error reading "name" entry in package.json file')
   }
   return name
 }
