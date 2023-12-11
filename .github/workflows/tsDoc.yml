@@ -3,7 +3,6 @@ name: TSDoc Actions
 
 on:
   release:
-    branches: [ "master" ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -28,7 +27,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -42,7 +41,6 @@ jobs:
           output_dir: ./docs
           front_page: README.md
           recurse: true
-          excludeExternals: true
 
       - name: Setup Pages
         uses: actions/configure-pages@v3

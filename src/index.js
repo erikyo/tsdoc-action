@@ -41,7 +41,7 @@ async function run () {
     const gitRemote = core.getInput('gitRemote')
     const disableGit = core.getInput('disableGit')
     const readme = core.getInput('readme')
-    const stripYamlFrontmatter = core.getBooleanInput('stripYamlFrontmatter')
+    const stripYamlFrontmatter = core.getInput('stripYamlFrontmatter')
 
     if (source_dir) {
       try {
@@ -63,8 +63,8 @@ async function run () {
       }
     }
 
-    if (template) {
-      templateName = await installer.installTemplate(template)
+    if (theme) {
+      templateName = await installer.installTemplate(theme)
     }
 
     const typedocPath = path.join(__dirname, '../node_modules/typedoc/bin/typedoc')
@@ -87,7 +87,7 @@ async function run () {
       args.push('--theme', template)
     }
     if (template_dir) {
-      args.push('--template_dir', path.join(GITHUB_WORKSPACE, '../node_modules/', templateName, template_dir));
+      args.push('--template_dir', path.join(GITHUB_WORKSPACE, '../node_modules/', templateName, template_dir))
     }
     if (front_page) {
       const readmePath = path.join(GITHUB_WORKSPACE, front_page)
