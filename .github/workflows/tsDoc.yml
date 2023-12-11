@@ -2,7 +2,6 @@
 name: TSDoc Actions
 
 on:
-  release:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 

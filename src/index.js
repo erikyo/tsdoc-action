@@ -11,7 +11,6 @@ async function run () {
     const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE
 
     const source_dir = core.getInput('source_dir')
-    const recurse = core.getInput('recurse')
     const output_dir = core.getInput('output_dir')
     const config_file = core.getInput('config_file')
     const theme = core.getInput('theme')
@@ -76,8 +75,8 @@ async function run () {
       const srcPath = path.join(GITHUB_WORKSPACE, source_dir)
       args.push(srcPath)
     }
-    if (recurse) {
-      args.push('--recurse')
+    if (output_dir) {
+      args.push('--out', path.join(GITHUB_WORKSPACE, output_dir))
     }
     if (config_file) {
       const configPath = path.join(GITHUB_WORKSPACE, config_file)
@@ -92,9 +91,6 @@ async function run () {
     if (front_page) {
       const readmePath = path.join(GITHUB_WORKSPACE, front_page)
       args.push('--readme', readmePath)
-    }
-    if (output_dir) {
-      args.push('--out', path.join(GITHUB_WORKSPACE, output_dir))
     }
     if (core.getInput('lightHighlightTheme')) {
       args.push('--lightHighlightTheme', core.getInput('lightHighlightTheme'))
