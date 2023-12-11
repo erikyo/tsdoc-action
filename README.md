@@ -102,8 +102,6 @@ jobs:
         with:
           source_dir: ./src
           output_dir: ./out
-          config_file: tsdoc.json
-          template: default
           front_page: README.md
 
       - name: Deploy

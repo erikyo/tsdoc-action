@@ -11,7 +11,7 @@ async function run () {
     const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE
 
     const source_dir = core.getInput('source_dir')
-    const recurse = core.getInput('recurse')
+    const recurse = core.getBooleanInput('recurse')
     const output_dir = core.getInput('output_dir')
     const config_file = core.getInput('config_file')
     const input_template_name = core.getInput('template_name') // Deprecated in favor of "template".
