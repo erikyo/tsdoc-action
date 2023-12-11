@@ -15,6 +15,9 @@ inputs:
   recurse:
     description: 'Recurse into subdirectories when scanning for source files'
     required: false
+  excludeExternals:
+    description: 'Prevent externally resolved TypeScript files from being documented. Defaults to false.'
+    required: false
   config_file:
     description: 'The path to a TSDoc configuration file'
     required: false
