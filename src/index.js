@@ -11,11 +11,10 @@ async function run () {
     const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE
 
     const source_dir = core.getInput('source_dir')
-    const recurse = core.getBooleanInput('recurse')
+    const recurse = core.getInput('recurse')
     const output_dir = core.getInput('output_dir')
     const config_file = core.getInput('config_file')
-    const input_template_name = core.getInput('template_name') // Deprecated in favor of "template".
-    const template = core.getInput('template') || input_template_name
+    const theme = core.getInput('theme')
     const template_dir = core.getInput('template_dir')
     const front_page = core.getInput('front_page')
 
@@ -27,26 +26,22 @@ async function run () {
     const resolveEntrypoints = entryPointStrategy === 'resolve'
     const packagesEntrypoints = entryPointStrategy === 'packages'
     const externalPattern = core.getMultilineInput('externalPattern')
-    const excludeExternals = core.getBooleanInput('excludeExternals')
-    const excludeNotDocumented = core.getBooleanInput('excludeNotDocumented')
+    const excludeExternals = core.getInput('excludeExternals')
+    const excludeNotDocumented = core.getInput('excludeNotDocumented')
     const excludeNotDocumentedKinds = core.getMultilineInput('excludeNotDocumentedKinds')
-    const excludeInternal = core.getBooleanInput('excludeInternal')
-    const excludePrivate = core.getBooleanInput('excludePrivate')
-    const excludeProtected = core.getBooleanInput('excludeProtected')
-    const excludeReferences = core.getBooleanInput('excludeReferences')
+    const excludeInternal = core.getInput('excludeInternal')
+    const excludePrivate = core.getInput('excludePrivate')
+    const excludeProtected = core.getInput('excludeProtected')
+    const excludeReferences = core.getInput('excludeReferences')
     const excludeCategories = core.getMultilineInput('excludeCategories')
-    const includeVersion = core.getBooleanInput('includeVersion')
-    const disableSources = core.getBooleanInput('disableSources')
+    const includeVersion = core.getInput('includeVersion')
+    const disableSources = core.getInput('disableSources')
     const sourceLinkTemplate = core.getInput('sourceLinkTemplate')
     const gitRevision = core.getInput('gitRevision')
     const gitRemote = core.getInput('gitRemote')
-    const disableGit = core.getBooleanInput('disableGit')
+    const disableGit = core.getInput('disableGit')
     const readme = core.getInput('readme')
     const stripYamlFrontmatter = core.getBooleanInput('stripYamlFrontmatter')
-
-    if (input_template_name) {
-      core.warning('❗The "template_name" input variable is deprecated in favor of "template"')
-    }
 
     if (source_dir) {
       try {
@@ -71,9 +66,6 @@ async function run () {
     if (template) {
       templateName = await installer.installTemplate(template)
     }
-    if (template_dir) {
-      args.push('--template_dir', path.join(GITHUB_WORKSPACE, template_dir))
-    }
 
     const typedocPath = path.join(__dirname, '../node_modules/typedoc/bin/typedoc')
 
@@ -91,11 +83,11 @@ async function run () {
       const configPath = path.join(GITHUB_WORKSPACE, config_file)
       args.push('--tsconfig', configPath)
     }
-    if (template) {
+    if (theme) {
       args.push('--theme', template)
     }
     if (template_dir) {
-      args.push('--template_dir', path.join(GITHUB_WORKSPACE, template_dir))
+      args.push('--template_dir', path.join(GITHUB_WORKSPACE, '../node_modules/', templateName, template_dir);
     }
     if (front_page) {
       const readmePath = path.join(GITHUB_WORKSPACE, front_page)

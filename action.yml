@@ -4,7 +4,6 @@ author: 'Erik Golinelli'
 branding:
   icon: 'book-open'
   color: 'blue'
-
 inputs:
   source_dir:
     description: 'Source directory to build documentation from'
@@ -21,14 +20,11 @@ inputs:
   config_file:
     description: 'The path to a TSDoc configuration file'
     required: false
-  template:
-    description: 'The TSDoc template or theme to install'
+  theme:
+    description: 'The TSDoc template or theme to install. https://typedoc.org/guides/themes/'
     required: false
   template_name:
     description: 'This input variable is deprecated in favour of "template"'
-    required: false
-  template_dir:
-    description: 'The relative location of the template files within the template package'
     required: false
   front_page:
     description: 'The path to a Markdown file to be used as the front page'
@@ -105,7 +101,6 @@ inputs:
   searchGroupBoosts:
     description: 'Configure the search to increase the relevance of items in a given group'
     required: false
-
 runs:
   using: 'node16'
   main: 'src/index.js'
