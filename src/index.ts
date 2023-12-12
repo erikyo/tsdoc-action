@@ -65,6 +65,8 @@ async function run(): Promise<string> {
         /**
          * Install typedoc
          */
+        await exec('ls', ['-la'])
+        await exec('ls', ['-la', GITHUB_WORKSPACE])
         await exec('npm', ['i', 'typedoc'])
 
         if (theme) {
