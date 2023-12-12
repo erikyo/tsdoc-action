@@ -1,7 +1,7 @@
 import {debug, info} from '@actions/core'
 import {exec} from '@actions/exec'
-import path from "path";
-import getPackageName from "./utils";
+import {join} from "path";
+import getPackageJson from "./utils";
 
 /**
  * Installs a TSDoc template or theme by executing `npm install template/theme --production`.
@@ -11,14 +11,13 @@ import getPackageName from "./utils";
  * @async
  * @returns {Promise<string>} The name of the installed template or theme.
  */
-export default async function installTemplate (template: string) : Promise<string> {
-  let templateName = ''
-  const actionDir = path.join(__dirname, '../')
+export default async function installPackage (template: string) : Promise<string> {
+  const actionDir = join(__dirname, '../')
   debug(`actionDir: ${actionDir}`)
 
   const cmd = 'npm'
   const args: string[] = ['install', template, '--production']
-  info(`📦 Installing TSDoc template/theme: ${template}`)
+  info(`📦 Installing TSDoc template/theme/plugin: ${template}`)
   debug(`Command: ${cmd} ${args}`)
 
   const options = {
@@ -45,8 +44,8 @@ export default async function installTemplate (template: string) : Promise<strin
   if (lsError) info(`🔴 Error: ${lsError}`)
   const packageLocation = lsOutput.trim() // path/to/template
 
-  const filePath = path.join(packageLocation + '/package.json')
-  templateName = await getPackageName(filePath)
-
-  return templateName
+  // get package name from package.json and return it
+  const filePath = join(packageLocation + '/package.json')
+  const { name } = await getPackageJson(filePath);
+  return  name
 }

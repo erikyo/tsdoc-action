@@ -2,7 +2,7 @@ import {getInput, getMultilineInput, setFailed, info} from '@actions/core'
 import {exec} from '@actions/exec'
 import {access} from 'node:fs/promises';
 import path from "path";
-import installTemplate from "./installer";
+import installPackage from "./installer";
 
 /**
  * Runs the documentation generation process.
@@ -13,7 +13,10 @@ import installTemplate from "./installer";
  */
 async function run(): Promise<string> {
     try {
+        /** The name of the installed template or theme. */
         let templateName: string;
+        /** The name of the installed plugin. */
+        let pluginName: string;
 
         /** Set the GITHUB_WORKSPACE environment variable. */
         const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE
@@ -33,7 +36,10 @@ async function run(): Promise<string> {
         /** Parse the inputs. */
         const output_dir = getInput('output_dir')
         const config_file = getInput('config_file')
+        const install_module = getInput('install_module')
         const theme = getInput('theme')
+        const themeColor = getInput('themeColor')
+        const plugin = getInput('plugin')
         const template_dir = getInput('template_dir')
         const front_page = getInput('front_page')
 
@@ -65,22 +71,21 @@ async function run(): Promise<string> {
         /**
          * Install typedoc
          */
-        await exec('ls', ['-la'])
         await exec('npm', ['install', 'typedoc'])
 
-        if (theme) {
-            templateName = await installTemplate(theme)
+        if (install_module) {
+            pluginName  = await installPackage(install_module)
+            info('📦 Plugin installed: ' + pluginName)
         }
 
         const cmd = 'npx typedoc'
 
         const args = ['--logLevel','Info']
 
-
         const srcPath = path.join(GITHUB_WORKSPACE, source_dir)
         args.push(srcPath)
+
         info('📂 Source directory: ' + srcPath)
-        await exec('ls', [ '-la', srcPath ])
 
         if (output_dir) {
             args.push('--out', path.join(GITHUB_WORKSPACE, output_dir))
@@ -100,8 +105,14 @@ async function run(): Promise<string> {
             const configPath = path.join(GITHUB_WORKSPACE, config_file)
             args.push('--tsconfig', configPath)
         }
+        if (plugin) {
+            args.push('--plugin', plugin)
+        }
         if (theme) {
             args.push('--theme', theme)
+        }
+        if (theme && themeColor) {
+            args.push('--themeColor', themeColor)
         }
         if (template_dir) {
             args.push('--template_dir', path.join(GITHUB_WORKSPACE, '../node_modules/', templateName, template_dir))

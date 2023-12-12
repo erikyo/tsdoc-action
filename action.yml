@@ -11,6 +11,15 @@ inputs:
   output_dir:
     description: 'Output folder for the generated documentation'
     required: false
+  theme:
+    description: 'The TSDoc template or theme to install. https://typedoc.org/guides/themes/'
+    required: false
+  themeColor:
+    description: 'The color of the theme'
+    required: false
+  plugins:
+    description: 'List of TSDoc plugins to use'
+    required: false
   recurse:
     description: 'Recurse into subdirectories when scanning for source files'
     required: false
@@ -19,9 +28,6 @@ inputs:
     required: false
   config_file:
     description: 'The path to a TSDoc configuration file'
-    required: false
-  theme:
-    description: 'The TSDoc template or theme to install. https://typedoc.org/guides/themes/'
     required: false
   template_name:
     description: 'This input variable is deprecated in favour of "template"'
