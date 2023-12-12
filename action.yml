@@ -17,11 +17,11 @@ inputs:
   themeColor:
     description: 'The color of the theme'
     required: false
-  plugins:
-    description: 'List of TSDoc plugins to use'
+  plugin:
+    description: 'a typedoc plugin to be used (see install instructions)'
     required: false
-  recurse:
-    description: 'Recurse into subdirectories when scanning for source files'
+  install_module:
+    description: 'the name of the module to install (use it to install a plugin for example)'
     required: false
   excludeExternals:
     description: 'Prevent externally resolved TypeScript files from being documented. Defaults to false.'

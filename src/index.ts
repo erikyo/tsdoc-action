@@ -71,7 +71,7 @@ async function run(): Promise<string> {
         /**
          * Install typedoc
          */
-        await exec('npm', ['install', 'typedoc'])
+        await exec('npm', ['install', 'typedoc', '--silent', '--omit=dev'])
 
         if (install_module) {
             pluginName  = await installPackage(install_module)
@@ -80,12 +80,11 @@ async function run(): Promise<string> {
 
         const cmd = 'npx typedoc'
 
-        const args = ['--logLevel','Info']
+        const args = []
 
         const srcPath = path.join(GITHUB_WORKSPACE, source_dir)
-        args.push(srcPath)
-
         info('📂 Source directory: ' + srcPath)
+        args.push(srcPath)
 
         if (output_dir) {
             args.push('--out', path.join(GITHUB_WORKSPACE, output_dir))
@@ -117,6 +116,20 @@ async function run(): Promise<string> {
         if (template_dir) {
             args.push('--template_dir', path.join(GITHUB_WORKSPACE, '../node_modules/', templateName, template_dir))
         }
+
+        if (readme) {
+            args.push('--readme', readme)
+        }
+        if (name) {
+            args.push('--name', name)
+        }
+        if (exclude) {
+            args.push('--exclude', exclude)
+        }
+        if (tsconfig) {
+            args.push('--tsconfig', tsconfig)
+        }
+
         if (front_page) {
             const readmePath = path.join(GITHUB_WORKSPACE, front_page)
             args.push('--readme', readmePath)
@@ -168,15 +181,6 @@ async function run(): Promise<string> {
         }
         if (getInput('titleLink')) {
             args.push('--titleLink', getInput('titleLink'))
-        }
-        if (name) {
-            args.push('--name', name)
-        }
-        if (exclude) {
-            args.push('--exclude', exclude)
-        }
-        if (tsconfig) {
-            args.push('--tsconfig', tsconfig)
         }
         if (entryPoints) {
             entryPoints.forEach(entryPoint => args.push('--entryPoints', entryPoint))
@@ -232,12 +236,11 @@ async function run(): Promise<string> {
         if (disableGit) {
             args.push('--disableGit')
         }
-        if (readme) {
-            args.push('--readme', readme)
-        }
         if (stripYamlFrontmatter) {
             args.push('--stripYamlFrontmatter')
         }
+
+        args.push('--logLevel','Info')
 
         info('📝 Generating documentation')
         await exec(cmd, args)

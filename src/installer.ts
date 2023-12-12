@@ -16,7 +16,7 @@ export default async function installPackage (template: string) : Promise<string
   debug(`actionDir: ${actionDir}`)
 
   const cmd = 'npm'
-  const args: string[] = ['install', template, '--production']
+  const args: string[] = ['install', template, '--silent', '--omit=dev']
   info(`📦 Installing TSDoc template/theme/plugin: ${template}`)
   debug(`Command: ${cmd} ${args}`)
 
