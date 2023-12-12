@@ -115,10 +115,20 @@ async function run(): Promise<string> {
          */
         const args: string[] = []
 
-
+        /**
+         * The log level to use
+         * Possible values: Verbose, Debug, Info, Warn, Error, None
+         */
         if (getInput('logLevel')) {
             args.push('--logLevel', getInput('logLevel'))
         }
+
+        /**
+         * The path to the source directory
+         */
+        const srcPath: string = join(GITHUB_WORKSPACE, source_dir)
+        info('📂 Source directory: ' + srcPath)
+        args.push(srcPath)
 
         /**
          * The base path of the package to be documented.
@@ -133,31 +143,30 @@ async function run(): Promise<string> {
         }
 
         /**
-         * The path to the source directory
+         * The output directory for the generated documentation.
          */
-        const srcPath: string = join(GITHUB_WORKSPACE, source_dir)
-        info('📂 Source directory: ' + srcPath)
-        args.push(srcPath)
-
         if (output_dir) {
             args.push('--out', join(GITHUB_WORKSPACE, output_dir))
         }
 
-
         /**
-         * the path to the tsconfig file, needed to resolve entry points and other options. Defaults to ./{action folder}/tsconfig.json
+         * The path to the tsconfig file, needed to resolve entry points and other options.
+         * typedoc will search for the tsconfig file in the action directory, so we have to point it to the workspace folder
+         * Defaults to ./{action folder}/tsconfig.json
+         *
          * https://typedoc.org/options/input/#resolve-(default)
          */
+        let tsConfigPath: string = GITHUB_WORKSPACE;
         if (tsconfig) {
-            const tsConfigPath = join(GITHUB_WORKSPACE, tsconfig)
-            if (existsSync(tsConfigPath)) {
-                setFailed('⛔️ Config file does not exist')
-                return
-            }
-
-            const configPath = join(GITHUB_WORKSPACE, tsconfig)
-            args.push('--tsconfig', configPath)
+            tsConfigPath = join(GITHUB_WORKSPACE, tsconfig)
         }
+        if (existsSync(tsConfigPath)) {
+            setFailed('⛔️ Tsconfig file not found')
+            return
+        }
+
+        const configPath = join(GITHUB_WORKSPACE, tsconfig)
+        args.push('--tsconfig', configPath)
 
         if (options) {
             const configPath = join(GITHUB_WORKSPACE, options)
