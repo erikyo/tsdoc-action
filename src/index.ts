@@ -1,8 +1,8 @@
 import {getInput, getMultilineInput, setFailed, info} from '@actions/core'
 import {exec} from '@actions/exec'
-import {access} from 'node:fs/promises';
-import path from "path";
+import {join} from "path";
 import installPackage from "./installer";
+import {existsSync} from "node:fs";
 
 /**
  * Runs the documentation generation process.
@@ -12,27 +12,34 @@ import installPackage from "./installer";
  * @return {Promise<string> | Error} The output directory of the generated documentation.
  */
 async function run(): Promise<string> {
-    try {
-        /** The name of the installed template or theme. */
-        let templateName: string;
-        /** The name of the installed plugin. */
-        let pluginName: string;
+    /** The name of the installed template or theme. */
+    let templateName: string;
 
-        /** Set the GITHUB_WORKSPACE environment variable. */
-        const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE
+    /** The name of the installed plugin. */
+    let pluginName: string;
 
-        /** Parse the inputs. */
-        const source_dir = getInput('source_dir')
+    /** Set the GITHUB_WORKSPACE variable. */
+    const GITHUB_WORKSPACE: string = process.env.GITHUB_WORKSPACE
 
-        if (source_dir) {
-            try {
-                await access(source_dir)
-            } catch (error) {
-                setFailed('⛔️ Source directory does not exist')
-                return;
-            }
+    console.log( GITHUB_WORKSPACE, 'current folder' )
+
+    /** The scripts root directory. */
+    const actionDir = join(GITHUB_WORKSPACE, '..')
+
+    console.log( actionDir, 'actionDir folder' )
+
+    /** Parse the inputs. */
+    const source_dir = getInput('source_dir')
+
+    /** Check if the source directory exists. */
+    if (source_dir) {
+        if (!existsSync(source_dir)) {
+            setFailed('⛔️ Source directory does not exist')
+            return;
         }
+    }
 
+    try {
         /** Parse the inputs. */
         const output_dir = getInput('output_dir')
         const config_file = getInput('config_file')
@@ -71,40 +78,45 @@ async function run(): Promise<string> {
         /**
          * Install typedoc
          */
-        await exec('npm', ['install', 'typedoc', '--production'])
+        await installPackage('typedoc', actionDir)
+        info('🆗 Typedoc installed')
 
+        /**
+         * Install additional modules
+         */
         if (install_module) {
-            pluginName  = await installPackage(install_module)
-            info('📦 Plugin installed: ' + pluginName)
+            pluginName = await installPackage(install_module, actionDir)
+            info(`🆗 ${pluginName} installed`)
         }
 
         const cmd = 'npx typedoc'
 
-        const args = []
+        const args: string[] = []
 
-        // Print the log
-        args.push('--logLevel','Info')
 
-        const srcPath = path.join(GITHUB_WORKSPACE, source_dir)
+        if (getInput('logLevel')) {
+            args.push('--logLevel', getInput('logLevel'))
+        }
+
+        /** the path to the source directory */
+        const srcPath = join(GITHUB_WORKSPACE, source_dir)
         info('📂 Source directory: ' + srcPath)
         args.push(srcPath)
 
         if (output_dir) {
-            args.push('--out', path.join(GITHUB_WORKSPACE, output_dir))
+            args.push('--out', join(GITHUB_WORKSPACE, output_dir))
         }
 
         if (config_file) {
-            try {
-                const configPath = path.join(GITHUB_WORKSPACE, config_file)
-                await access(configPath)
-            } catch (error) {
+            const configPath = join(GITHUB_WORKSPACE, config_file)
+            if (existsSync(configPath)) {
                 setFailed('⛔️ Config file does not exist')
                 return
             }
         }
 
         if (config_file) {
-            const configPath = path.join(GITHUB_WORKSPACE, config_file)
+            const configPath = join(GITHUB_WORKSPACE, config_file)
             args.push('--tsconfig', configPath)
         }
         if (plugin) {
@@ -117,7 +129,7 @@ async function run(): Promise<string> {
             args.push('--themeColor', themeColor)
         }
         if (template_dir) {
-            args.push('--template_dir', path.join(GITHUB_WORKSPACE, '../node_modules/', templateName, template_dir))
+            args.push('--template_dir', join(GITHUB_WORKSPACE, '../node_modules/', templateName, template_dir))
         }
 
         if (readme) {
@@ -134,7 +146,7 @@ async function run(): Promise<string> {
         }
 
         if (front_page) {
-            const readmePath = path.join(GITHUB_WORKSPACE, front_page)
+            const readmePath = join(GITHUB_WORKSPACE, front_page)
             args.push('--readme', readmePath)
         }
         if (getInput('lightHighlightTheme')) {
@@ -144,7 +156,7 @@ async function run(): Promise<string> {
             args.push('--darkHighlightTheme', getInput('darkHighlightTheme'))
         }
         if (getInput('customCss')) {
-            args.push('--customCss', path.join(GITHUB_WORKSPACE, getInput('customCss')))
+            args.push('--customCss', join(GITHUB_WORKSPACE, getInput('customCss')))
         }
         if (getInput('markedOptions')) {
             args.push('--markedOptions', getInput('markedOptions'))
@@ -242,13 +254,18 @@ async function run(): Promise<string> {
         if (stripYamlFrontmatter) {
             args.push('--stripYamlFrontmatter')
         }
+        if (getInput('showConfig')) {
+            args.push('--showConfig')
+        }
 
         info('📝 Generating documentation')
-        await exec(cmd, args)
+        await exec(cmd, args, {cwd: actionDir})
 
         return output_dir
 
     } catch (error) {
+        Error(`🔴 Something went wrong while generating documentation:`)
+        Error(`Current paths: workingDirectory: ${GITHUB_WORKSPACE} actionDir: ${actionDir}`)
         setFailed(error.message)
         process.exit(1)
     }

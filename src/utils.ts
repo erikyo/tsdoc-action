@@ -1,6 +1,5 @@
 import {setFailed} from '@actions/core'
-import fs from "fs";
-import {promisify} from "util";
+import fs from "node:fs/promises";
 
 /**
  * Retrieves the package data from a package.json file.
@@ -10,11 +9,10 @@ import {promisify} from "util";
  *
  */
 export default async function getPackageJson (filePath: string): Promise<{ name: string }> {
-  const readFile = promisify(fs.readFile)
-  const fileContents = await readFile(filePath, 'utf8')
+  const fileContents = await fs.readFile(filePath, 'utf8')
   /** Parse the package.json file. */
   try {
-    return JSON.parse(fileContents) as { name: string }
+    return JSON.parse(fileContents) as {name: string}
   } catch (error) {
     setFailed('🔴 There was an error reading "name" entry in package.json file')
   }

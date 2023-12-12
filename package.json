@@ -18,8 +18,7 @@
     "build-all": "npm run lint && npm run build && npm run package",
     "lint": "eslint ./src --fix",
     "package": "ncc build src/index.ts -o lib --license LICENSE",
-    "prepare": "husky install",
-    "tsdoc": "npx typedoc src"
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -36,7 +35,8 @@
   ],
   "dependencies": {
     "@actions/core": "^1.10.1",
-    "@actions/exec": "^1.1.1"
+    "@actions/exec": "^1.1.1",
+    "typedoc": "^0.25.4"
   },
   "devDependencies": {
     "@types/node": "^18.19.3",

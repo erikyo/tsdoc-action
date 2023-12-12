@@ -23,6 +23,15 @@ inputs:
   install_module:
     description: 'the name of the module to install (use it to install a plugin for example)'
     required: false
+  logLevel:
+    description: 'The log level to use [Verbose|Debug|Info|Warn|Error|None]'
+    required: false
+  showConfig:
+    description: 'Print TypeDoc config and exit. Useful for debugging what options have been set.'
+    required: false
+  skipErrorChecking:
+    description: 'Instructs TypeDoc to not run the type checker before converting a project. Enabling this option may improve generation time, but could also result in crashes if your code contains type errors.'
+    required: false
   excludeExternals:
     description: 'Prevent externally resolved TypeScript files from being documented. Defaults to false.'
     required: false
