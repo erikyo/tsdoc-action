@@ -206,6 +206,9 @@ async function run(): Promise<string|Error> {
         const readmePath = join(GITHUB_WORKSPACE, front_page)
         args.push('--readme', readmePath)
     }
+    if (getInput('skipErrorChecking')) {
+        args.push('--skipErrorChecking', getInput('skipErrorChecking'))
+    }
     if (getInput('lightHighlightTheme')) {
         args.push('--lightHighlightTheme', getInput('lightHighlightTheme'))
     }
