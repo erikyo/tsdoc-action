@@ -35,7 +35,7 @@ jobs:
 
       - run: npm install
 
-      - name: TSDoc Action
+      - name: TypeDoc Action
         uses: erikyo/tsdoc-action@v1
         with:
           source_dir: ./src/*
