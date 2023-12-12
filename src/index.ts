@@ -71,7 +71,7 @@ async function run(): Promise<string> {
         /**
          * Install typedoc
          */
-        await exec('npm', ['install', 'typedoc', '--silent', '--omit=dev'])
+        await exec('npm', ['install', 'typedoc', '--silent', '--production'])
 
         if (install_module) {
             pluginName  = await installPackage(install_module)
