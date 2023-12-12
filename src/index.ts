@@ -3,6 +3,7 @@ import {exec} from '@actions/exec'
 import {join} from "path";
 import installPackage from "./installer";
 import {existsSync} from "node:fs";
+import {glob} from "glob";
 
 /**
  * Runs the documentation generation process.
@@ -16,22 +17,76 @@ async function run(): Promise<string|Error> {
     /** Set the GITHUB_WORKSPACE variable. */
     const GITHUB_WORKSPACE: string = process.env.GITHUB_WORKSPACE
 
+    /**
+     * The variable 'args' is an array of strings.
+     * It is used to hold command line arguments passed to typedoc function.
+     * Each element in the array represents a separate command line argument.
+     *
+     * @type {string[]}
+     * @example
+     * // Empty array
+     * const args = [];
+     *
+     * // Array with command line arguments
+     * const args = ['arg1', 'arg2', 'arg3'];
+     */
+    const args: string[] = []
+
+    /**
+     * The cmd variable represents the command to execute Typedoc.
+     */
+    const cmd: string = 'npx typedoc'
+
     console.log( GITHUB_WORKSPACE, 'current folder' )
 
     /** The scripts root directory. */
-    const actionDir = join(GITHUB_WORKSPACE, '..')
+    const actionDir: string = join(GITHUB_WORKSPACE, '..')
 
     console.log( actionDir, 'actionDir folder' )
 
-    /** Parse the inputs. */
-    const source_dir = getInput('source_dir')
+    /** The source directory. */
+    const source_dir: string = getInput('source_dir')
 
     /** Check if the source directory exists. */
     if (source_dir) {
-        if (!existsSync(source_dir)) {
+        if (!await glob(join(GITHUB_WORKSPACE, source_dir))) {
             throw new Error('⛔️ Source directory does not exist')
         }
+
+        /**
+         * The path to the source directory
+         */
+        const srcPath: string = join(GITHUB_WORKSPACE, source_dir)
+        info('📂 Source directory: ' + srcPath)
+        args.push(srcPath)
     }
+
+    /** The entry points */
+    const entryPointsPattern = getMultilineInput('entryPoints')
+    // Validate the existence of entry points based on the wildcard pattern.
+    await Promise.all(
+        entryPointsPattern.map(async (pattern) => {
+            const matchingFiles = await glob(join(GITHUB_WORKSPACE, pattern));
+            if (matchingFiles.length === 0) {
+                throw new Error(`⛔️ Entry point does not exist: ${pattern}`);
+            }
+            info('✳️ Adding entry point: ' + pattern)
+            args.push('--entryPoints', join(GITHUB_WORKSPACE, pattern));
+        })
+    );
+
+    /** If at this moment there are no entry points, throw an error and exit. */
+    if (args.length === 0) {
+        throw new Error('⛔️ No entry point found, please provide a "source_dir" or "entryPoints" in order to generate the documentation');
+    }
+
+    const entryPointStrategy = getInput('entryPointStrategy')
+    const resolveEntrypoints = entryPointStrategy === 'resolve'
+    const packagesEntrypoints = entryPointStrategy === 'packages'
+    if (resolveEntrypoints) {
+        args.push('--entryPointStrategy', 'resolve')
+    }
+
     /** The output directory. */
     const output_dir = getInput('output_dir')
 
@@ -40,9 +95,6 @@ async function run(): Promise<string|Error> {
      */
     const options = getInput('options')
     const tsconfig = getInput('tsconfig')
-    const entryPointStrategy = getInput('entryPointStrategy')
-    const resolveEntrypoints = entryPointStrategy === 'resolve'
-    const packagesEntrypoints = entryPointStrategy === 'packages'
 
     const install_module = getInput('install_module')
     const theme = getInput('theme')
@@ -52,7 +104,6 @@ async function run(): Promise<string|Error> {
 
     const name = getInput('name')
     const exclude = getInput('exclude')
-    const entryPoints = getMultilineInput('entryPoints')
     const externalPattern = getMultilineInput('externalPattern')
     const excludeExternals = getInput('excludeExternals')
     const excludeNotDocumented = getInput('excludeNotDocumented')
@@ -79,40 +130,13 @@ async function run(): Promise<string|Error> {
 
     /**
      * Install additional modules
+     * TODO: Add support for multiple modules in the future
+     * TODO: Install multiple modules at once (including typedoc)
      */
     if (install_module) {
         const pluginName = await installPackage(install_module, actionDir)
         info(`🆗 ${pluginName} installed`)
     }
-
-    /**
-     * The cmd variable represents the command to execute Typedoc.
-     *
-     * @type {string}
-     */
-    const cmd: string = 'npx typedoc'
-
-    /**
-     * The variable 'args' is an array of strings.
-     * It is used to hold command line arguments passed to typedoc function.
-     * Each element in the array represents a separate command line argument.
-     *
-     * @type {string[]}
-     * @example
-     * // Empty array
-     * const args = [];
-     *
-     * // Array with command line arguments
-     * const args = ['arg1', 'arg2', 'arg3'];
-     */
-    const args: string[] = []
-
-    /**
-     * The path to the source directory
-     */
-    const srcPath: string = join(GITHUB_WORKSPACE, source_dir)
-    info('📂 Source directory: ' + srcPath)
-    args.push(srcPath)
 
     /**
      * The base path of the package to be documented.
@@ -177,9 +201,6 @@ async function run(): Promise<string|Error> {
     if (exclude) {
         args.push('--exclude', exclude)
     }
-    if (tsconfig) {
-        args.push('--tsconfig', tsconfig)
-    }
 
     if (front_page) {
         const readmePath = join(GITHUB_WORKSPACE, front_page)
@@ -229,12 +250,6 @@ async function run(): Promise<string|Error> {
     }
     if (getInput('titleLink')) {
         args.push('--titleLink', getInput('titleLink'))
-    }
-    if (entryPoints) {
-        entryPoints.forEach(entryPoint => args.push('--entryPoints', entryPoint))
-    }
-    if (resolveEntrypoints) {
-        args.push('--entryPointStrategy', 'resolve')
     }
     if (packagesEntrypoints) {
         args.push('--entryPointStrategy', 'packages')
