@@ -14,7 +14,7 @@ import getPackageJson from "./utils";
  */
 export default async function installPackage(packageName: string, actionDir: string = __dirname): Promise<string> {
     const cmd = 'npm'
-    const args: string[] = ['ci', packageName, '--silent', '--omit=dev']
+    const args: string[] = ['i', packageName, '--silent', '--omit=dev']
     debug(`📦 ${packageName} installing in ${actionDir}`)
     debug(`Command: ${cmd} ${args}`)
 
