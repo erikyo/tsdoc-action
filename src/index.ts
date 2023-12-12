@@ -1,4 +1,4 @@
-import {getInput, getMultilineInput, setFailed, info} from '@actions/core'
+import {getInput, getMultilineInput, setFailed, info, error} from '@actions/core'
 import {exec} from '@actions/exec'
 import {join} from "path";
 import installPackage from "./installer";
@@ -38,11 +38,19 @@ async function run(): Promise<string> {
             return;
         }
     }
+    /** The output directory. */
+    const output_dir = getInput('output_dir')
 
     try {
-        /** Parse the inputs. */
-        const output_dir = getInput('output_dir')
-        const config_file = getInput('config_file')
+        /**
+         * Parse the inputs.
+         */
+        const options = getInput('options')
+        const tsconfig = getInput('tsconfig') || 'tsconfig.json'
+        const entryPointStrategy = getInput('entryPointStrategy')
+        const resolveEntrypoints = entryPointStrategy === 'resolve'
+        const packagesEntrypoints = entryPointStrategy === 'packages'
+
         const install_module = getInput('install_module')
         const theme = getInput('theme')
         const themeColor = getInput('themeColor')
@@ -52,11 +60,7 @@ async function run(): Promise<string> {
 
         const name = getInput('name')
         const exclude = getInput('exclude')
-        const tsconfig = getInput('tsconfig')
         const entryPoints = getMultilineInput('entryPoints')
-        const entryPointStrategy = getInput('entryPointStrategy')
-        const resolveEntrypoints = entryPointStrategy === 'resolve'
-        const packagesEntrypoints = entryPointStrategy === 'packages'
         const externalPattern = getMultilineInput('externalPattern')
         const excludeExternals = getInput('excludeExternals')
         const excludeNotDocumented = getInput('excludeNotDocumented')
@@ -89,8 +93,26 @@ async function run(): Promise<string> {
             info(`🆗 ${pluginName} installed`)
         }
 
-        const cmd = 'npx typedoc'
+        /**
+         * The cmd variable represents the command to execute Typedoc.
+         *
+         * @type {string}
+         */
+        const cmd: string = 'npx typedoc'
 
+        /**
+         * The variable 'args' is an array of strings.
+         * It is used to hold command line arguments passed to typedoc function.
+         * Each element in the array represents a separate command line argument.
+         *
+         * @type {string[]}
+         * @example
+         * // Empty array
+         * const args = [];
+         *
+         * // Array with command line arguments
+         * const args = ['arg1', 'arg2', 'arg3'];
+         */
         const args: string[] = []
 
 
@@ -98,8 +120,22 @@ async function run(): Promise<string> {
             args.push('--logLevel', getInput('logLevel'))
         }
 
-        /** the path to the source directory */
-        const srcPath = join(GITHUB_WORKSPACE, source_dir)
+        /**
+         * The base path of the package to be documented.
+         * Since the base path is relative to the current working directory,
+         * we need to use the GITHUB_WORKSPACE variable.
+         */
+        const basePath = getInput('basePath');
+        if (basePath) {
+            args.push('--basePath', join(GITHUB_WORKSPACE, basePath))
+        } else {
+            args.push('--basePath', GITHUB_WORKSPACE)
+        }
+
+        /**
+         * The path to the source directory
+         */
+        const srcPath: string = join(GITHUB_WORKSPACE, source_dir)
         info('📂 Source directory: ' + srcPath)
         args.push(srcPath)
 
@@ -107,18 +143,27 @@ async function run(): Promise<string> {
             args.push('--out', join(GITHUB_WORKSPACE, output_dir))
         }
 
-        if (config_file) {
-            const configPath = join(GITHUB_WORKSPACE, config_file)
-            if (existsSync(configPath)) {
+
+        /**
+         * the path to the tsconfig file, needed to resolve entry points and other options. Defaults to ./{action folder}/tsconfig.json
+         * https://typedoc.org/options/input/#resolve-(default)
+         */
+        if (tsconfig) {
+            const tsConfigPath = join(GITHUB_WORKSPACE, tsconfig)
+            if (existsSync(tsConfigPath)) {
                 setFailed('⛔️ Config file does not exist')
                 return
             }
-        }
 
-        if (config_file) {
-            const configPath = join(GITHUB_WORKSPACE, config_file)
+            const configPath = join(GITHUB_WORKSPACE, tsconfig)
             args.push('--tsconfig', configPath)
         }
+
+        if (options) {
+            const configPath = join(GITHUB_WORKSPACE, options)
+            args.push('--options', configPath)
+        }
+
         if (plugin) {
             args.push('--plugin', plugin)
         }
@@ -128,7 +173,7 @@ async function run(): Promise<string> {
         if (theme && themeColor) {
             args.push('--themeColor', themeColor)
         }
-        if (template_dir) {
+        if (templateName) {
             args.push('--template_dir', join(GITHUB_WORKSPACE, '../node_modules/', templateName, template_dir))
         }
 
@@ -160,9 +205,6 @@ async function run(): Promise<string> {
         }
         if (getInput('markedOptions')) {
             args.push('--markedOptions', getInput('markedOptions'))
-        }
-        if (getInput('basePath')) {
-            args.push('--basePath', getInput('basePath'))
         }
         if (getInput('cname')) {
             args.push('--cname', getInput('cname'))
@@ -263,14 +305,17 @@ async function run(): Promise<string> {
 
         return output_dir
 
-    } catch (error) {
-        Error(`🔴 Something went wrong while generating documentation:`)
-        Error(`Current paths: workingDirectory: ${GITHUB_WORKSPACE} actionDir: ${actionDir}`)
-        setFailed(error.message)
+    } catch (err) {
+        error(`🔴 Something went wrong while generating documentation`)
+        error(`Current paths: workingDirectory: ${GITHUB_WORKSPACE} actionDir: ${actionDir}`)
+        setFailed( err.message )
         process.exit(1)
     }
 }
 
+/**
+ *
+ */
 run().then(output_dir => {
     info(`📖 Documentation has been generated to the ${output_dir} folder 📁`)
     process.exit(0)

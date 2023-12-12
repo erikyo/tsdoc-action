@@ -11,6 +11,12 @@ inputs:
   output_dir:
     description: 'Output folder for the generated documentation'
     required: false
+  tsconfig_file:
+    description: 'The path to a tsconfig.json file. Defaults to ./tsconfig.json'
+    required: false
+  options:
+    description: 'Options to be forwarded to Typedoc when generating documentation'
+    required: false
   theme:
     description: 'The TSDoc template or theme to install. https://typedoc.org/guides/themes/'
     required: false
@@ -34,9 +40,6 @@ inputs:
     required: false
   excludeExternals:
     description: 'Prevent externally resolved TypeScript files from being documented. Defaults to false.'
-    required: false
-  config_file:
-    description: 'The path to a TSDoc configuration file'
     required: false
   template_name:
     description: 'This input variable is deprecated in favour of "template"'
