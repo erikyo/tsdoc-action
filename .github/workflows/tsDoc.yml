@@ -41,7 +41,6 @@ jobs:
           source_dir: ./src
           output_dir: ./docs
           front_page: README.md
-          theme: typedoc-material-theme
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
