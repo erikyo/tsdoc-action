@@ -12,9 +12,9 @@ The following example [workflow step](https://help.github.com/en/actions/configu
 - name: Build
   uses: erikyo/tsdoc-action@v1
   with:
-    source_dir: ./src
-    recurse: true
-    output_dir: ./out
+    source_dir: ./src/*
+    output_dir: ./docs
+    front_page: README.md
 ```
 
 ## Supported platforms
@@ -31,59 +31,60 @@ The following input variables options can/must be configured:
 
 Certainly! Here's an updated version of your README table with some corrections and additions:
 
-| Input variable              | Necessity | Description                                                                                                                                              | Default                        |
-|-----------------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
-| `entryPoints`               | Optional  | Entry points for TypeDoc to analyze. same as `source_dir`                                                                                                |                                |
-| `output_dir`                | Optional  | Output folder for the generated documentation.                                                                                                           | `./out`                        |
-| `options`                   | Optional  | The path to a TypeDoc configuration file. see https://typedoc.org/options/configuration/#options                                                         |                                |
-| `tsconfig`                  | Optional  | The path to a tsconfig.json file. Defaults to ./tsconfig.json                                                                                            | `./tsconfig.json `             |
-| `name`                      | Optional  | Set the name of the project that will be used in the header of the template.                                                                             | Package name from package.json |
-| `titleLink`                 | Optional  | Link the title in the header points to.                                                                                                                  |                                |
-| `entryPointStrategy`        | Optional  | Strategy for determining entry points. Valid options are 'resolve' or 'packages'.                                                                        |                                |
-| `install_module`            | Optional  | The Plugin, theme, template npm package name that you need to install.                                                                                   |                                | 
-| `plugin`                    | Optional  | The TypeDoc plugin that you want to use. Requires to be installed using `install_module`.                                                                |                                |
-| `theme`                     | Optional  | The TypeDoc template or theme. Requires the theme to be installed using `install_module`.                                                                |                                |
-| `theme_dir`                 | Optional  | The relative location of the template files directory within the template package.                                                                       |                                |
-| `themeColor`                | Optional  | The base color for your theme/template.                                                                                                                  |                                |
-| `front_page`                | Optional  | The path to a Markdown file to be used as the front page. Normally `README.md`.                                                                          |                                |
-| `basePath`                  | Optional  | Base path to be used when displaying file paths.                                                                                                         |                                |
-| `excludeInternal`           | Optional  | Removes symbols annotated with the `@internal` doc tag.                                                                                                  | `true`                         |
-| `excludePrivate`            | Optional  | Removes private class members from the generated documentation.                                                                                          | `false`                        |
-| `excludeProtected`          | Optional  | Removes protected class members from the generated documentation.                                                                                        | `false`                        |
-| `excludeReferences`         | Optional  | Removes re-exports of a symbol already included in the documentation from the documentation.                                                             | `false`                        |
-| `excludeCategories`         | Optional  | Removes reflections associated with any of the given categories.                                                                                         |                                |
-| `includeVersion`            | Optional  | Includes the version according to package.json in generated documentation.                                                                               | `false`                        |
-| `disableSources`            | Optional  | Disables capturing where reflections are declared when converting input.                                                                                 | `false`                        |
-| `sourceLinkTemplate`        | Optional  | Specify a link template to be used when generating source urls.                                                                                          |                                |
-| `gitRevision`               | Optional  | Use specified revision or branch instead of the last revision for linking to source files.                                                               |                                |
-| `gitRemote`                 | Optional  | Use the specified git remote instead of origin for linking to source files.                                                                              |                                |
-| `disableGit`                | Optional  | Prevents TypeDoc from using Git to try to determine if sources can be linked.                                                                            | `false`                        |
-| `readme`                    | Optional  | Path to the readme file that should be displayed on the index page.                                                                                      |                                |
-| `stripYamlFrontmatter`      | Optional  | Remove YAML frontmatter from the readme file displayed on the main page.                                                                                 | `false`                        |
-| `lightHighlightTheme`       | Optional  | The Shiki theme to be used to highlight code snippets in light mode.                                                                                     |                                |
-| `darkHighlightTheme`        | Optional  | The Shiki theme to be used to highlight code snippets in dark mode.                                                                                      |                                |
-| `customCss`                 | Optional  | Extra CSS file to be copied into the assets directory and referenced by the theme.                                                                       |                                |
-| `markedOptions`             | Optional  | Options to be forwarded to Marked when parsing doc comments.                                                                                             |                                |
-| `cname`                     | Optional  | Text for creating a CNAME file in the output directory.                                                                                                  |                                |
-| `sourceLinkExternal`        | Optional  | Treat source links as external links that open in a new tab when generating HTML.                                                                        |                                |
-| `htmlLang`                  | Optional  | Sets the lang attribute in TypeDocs HTML output.                                                                                                         |                                |
-| `githubPages`               | Optional  | Automatically add a .nojekyll file to the output directory to prevent GitHub Pages from processing your documentation site using Jekyll.                 |                                |
-| `cacheBust`                 | Optional  | Include the generation time in `script` and `link` tags to JS/CSS assets to prevent assets from a previous build of the documentation from being used.   |                                |
-| `gaID`                      | Optional  | Set the Google Analytics tracking ID and activate tracking code.                                                                                         |                                |
-| `hideParameterTypesInTitle` | Optional  | Hide parameter types in the signature "title" for easier scanning.                                                                                       |                                |
-| `hideGenerator`             | Optional  | Do not print the TypeDoc link at the end of the page.                                                                                                    |                                |
-| `searchInComments`          | Optional  | Enables searching comment text in the generated documentation site.                                                                                      |                                |
-| `cleanOutputDir`            | Optional  | Prevent TypeDoc from cleaning the output directory specified with `--out`.                                                                               |                                |
-| `externalPattern`           | Optional  | Patterns for external packages that should be included in the documentation.                                                                             |                                |
-| `excludeExternals`          | Optional  | Prevent externally resolved TypeScript files from being documented. Defaults to `false`.                                                                 | `false`                        |
-| `excludeNotDocumented`      | Optional  | Exclude symbols that are not explicitly documented. Defaults to `false`.                                                                                 | `false`                        |
-| `excludeNotDocumentedKinds` | Optional  | Exclude symbols of the given kinds if they are not explicitly documented.                                                                                |                                |
-| `excludeInternal`           | Optional  | Exclude symbols marked with the `@internal` tag. Defaults to `false`.                                                                                    | `false`                        |
-| `excludePrivate`            | Optional  | Exclude symbols marked with the `@private` tag. Defaults to `false`.                                                                                     | `false`                        |
-| `excludeProtected`          | Optional  | Exclude symbols marked with the `@protected` tag. Defaults to `false`.                                                                                   | `false`                        |
-| `excludeReferences`         | Optional  | Exclude references of symbols already included in the documentation. Defaults to `false`.                                                                | `false`                        |
-| `excludeCategories`         | Optional  | Exclude reflections associated with any of the given categories.                                                                                         |                                |
-| `showConfig`                | Optional  | Show the resolved configuration and exit.                                                                                                                |                                |
+| Input variable              | Necessity | Description                                                                                                                                            | Default                        |
+|-----------------------------|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
+| `source_dir`                |           | Entry points for TypeDoc to analyze. same as `source_dir`                                                                                              |                                |
+| `entryPoints`               | Optional  | Entry points for TypeDoc to analyze. same as `entryPoints`                                                                                             |                                |
+| `output_dir`                | Optional  | Output folder for the generated documentation.                                                                                                         | `./out`                        |
+| `options`                   | Optional  | The path to a TypeDoc configuration file. see https://typedoc.org/options/configuration/#options                                                       |                                |
+| `tsconfig`                  | Optional  | The path to a tsconfig.json file. Defaults to ./tsconfig.json                                                                                          | `./tsconfig.json `             |
+| `name`                      | Optional  | Set the name of the project that will be used in the header of the template.                                                                           | Package name from package.json |
+| `titleLink`                 | Optional  | Link the title in the header points to.                                                                                                                |                                |
+| `entryPointStrategy`        | Optional  | Strategy for determining entry points. Valid options are 'resolve' or 'packages'.                                                                      |                                |
+| `install_module`            | Optional  | The Plugin, theme, template npm package name that you need to install.                                                                                 |                                | 
+| `plugin`                    | Optional  | The TypeDoc plugin that you want to use. Requires to be installed using `install_module`.                                                              |                                |
+| `theme`                     | Optional  | The TypeDoc template or theme. Requires the theme to be installed using `install_module`.                                                              |                                |
+| `theme_dir`                 | Optional  | The relative location of the template files directory within the template package.                                                                     |                                |
+| `themeColor`                | Optional  | The base color for your theme/template.                                                                                                                |                                |
+| `front_page`                | Optional  | The path to a Markdown file to be used as the front page. Normally `README.md`.                                                                        |                                |
+| `basePath`                  | Optional  | Base path to be used when displaying file paths.                                                                                                       |                                |
+| `excludeInternal`           | Optional  | Removes symbols annotated with the `@internal` doc tag.                                                                                                | `true`                         |
+| `excludePrivate`            | Optional  | Removes private class members from the generated documentation.                                                                                        | `false`                        |
+| `excludeProtected`          | Optional  | Removes protected class members from the generated documentation.                                                                                      | `false`                        |
+| `excludeReferences`         | Optional  | Removes re-exports of a symbol already included in the documentation from the documentation.                                                           | `false`                        |
+| `excludeCategories`         | Optional  | Removes reflections associated with any of the given categories.                                                                                       |                                |
+| `includeVersion`            | Optional  | Includes the version according to package.json in generated documentation.                                                                             | `false`                        |
+| `disableSources`            | Optional  | Disables capturing where reflections are declared when converting input.                                                                               | `false`                        |
+| `sourceLinkTemplate`        | Optional  | Specify a link template to be used when generating source urls.                                                                                        |                                |
+| `gitRevision`               | Optional  | Use specified revision or branch instead of the last revision for linking to source files.                                                             |                                |
+| `gitRemote`                 | Optional  | Use the specified git remote instead of origin for linking to source files.                                                                            |                                |
+| `disableGit`                | Optional  | Prevents TypeDoc from using Git to try to determine if sources can be linked.                                                                          | `false`                        |
+| `readme`                    | Optional  | Path to the readme file that should be displayed on the index page.                                                                                    |                                |
+| `stripYamlFrontmatter`      | Optional  | Remove YAML frontmatter from the readme file displayed on the main page.                                                                               | `false`                        |
+| `lightHighlightTheme`       | Optional  | The Shiki theme to be used to highlight code snippets in light mode.                                                                                   |                                |
+| `darkHighlightTheme`        | Optional  | The Shiki theme to be used to highlight code snippets in dark mode.                                                                                    |                                |
+| `customCss`                 | Optional  | Extra CSS file to be copied into the assets directory and referenced by the theme.                                                                     |                                |
+| `markedOptions`             | Optional  | Options to be forwarded to Marked when parsing doc comments.                                                                                           |                                |
+| `cname`                     | Optional  | Text for creating a CNAME file in the output directory.                                                                                                |                                |
+| `sourceLinkExternal`        | Optional  | Treat source links as external links that open in a new tab when generating HTML.                                                                      |                                |
+| `htmlLang`                  | Optional  | Sets the lang attribute in TypeDocs HTML output.                                                                                                       |                                |
+| `githubPages`               | Optional  | Automatically add a .nojekyll file to the output directory to prevent GitHub Pages from processing your documentation site using Jekyll.               |                                |
+| `cacheBust`                 | Optional  | Include the generation time in `script` and `link` tags to JS/CSS assets to prevent assets from a previous build of the documentation from being used. |                                |
+| `gaID`                      | Optional  | Set the Google Analytics tracking ID and activate tracking code.                                                                                       |                                |
+| `hideParameterTypesInTitle` | Optional  | Hide parameter types in the signature "title" for easier scanning.                                                                                     |                                |
+| `hideGenerator`             | Optional  | Do not print the TypeDoc link at the end of the page.                                                                                                  |                                |
+| `searchInComments`          | Optional  | Enables searching comment text in the generated documentation site.                                                                                    |                                |
+| `cleanOutputDir`            | Optional  | Prevent TypeDoc from cleaning the output directory specified with `--out`.                                                                             |                                |
+| `externalPattern`           | Optional  | Patterns for external packages that should be included in the documentation.                                                                           |                                |
+| `excludeExternals`          | Optional  | Prevent externally resolved TypeScript files from being documented. Defaults to `false`.                                                               | `false`                        |
+| `excludeNotDocumented`      | Optional  | Exclude symbols that are not explicitly documented. Defaults to `false`.                                                                               | `false`                        |
+| `excludeNotDocumentedKinds` | Optional  | Exclude symbols of the given kinds if they are not explicitly documented.                                                                              |                                |
+| `excludeInternal`           | Optional  | Exclude symbols marked with the `@internal` tag. Defaults to `false`.                                                                                  | `false`                        |
+| `excludePrivate`            | Optional  | Exclude symbols marked with the `@private` tag. Defaults to `false`.                                                                                   | `false`                        |
+| `excludeProtected`          | Optional  | Exclude symbols marked with the `@protected` tag. Defaults to `false`.                                                                                 | `false`                        |
+| `excludeReferences`         | Optional  | Exclude references of symbols already included in the documentation. Defaults to `false`.                                                              | `false`                        |
+| `excludeCategories`         | Optional  | Exclude reflections associated with any of the given categories.                                                                                       |                                |
+| `showConfig`                | Optional  | Show the resolved configuration and exit.                                                                                                              |                                |
 
 Please note that I added the missing options and adjusted the names of some options to match the actual code implementation. Feel free to adapt it further based on your preferences.
 ## Templates and Plugins 🖌️
@@ -143,7 +144,7 @@ jobs:
       - name: TSDoc Action
         uses: erikyo/tsdoc-action@v1
         with:
-          source_dir: ./src
+          source_dir: ./src/*
           output_dir: ./docs
           front_page: README.md
 
