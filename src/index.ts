@@ -82,6 +82,9 @@ async function run(): Promise<string> {
 
         const args = []
 
+        // Print the log
+        args.push('--logLevel','Info')
+
         const srcPath = path.join(GITHUB_WORKSPACE, source_dir)
         info('📂 Source directory: ' + srcPath)
         args.push(srcPath)
@@ -239,8 +242,6 @@ async function run(): Promise<string> {
         if (stripYamlFrontmatter) {
             args.push('--stripYamlFrontmatter')
         }
-
-        args.push('--logLevel','Info')
 
         info('📝 Generating documentation')
         await exec(cmd, args)
