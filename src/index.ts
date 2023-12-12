@@ -66,19 +66,21 @@ async function run(): Promise<string> {
          * Install typedoc
          */
         await exec('ls', ['-la'])
-        await exec('ls', ['-la', GITHUB_WORKSPACE])
-        await exec('npm', ['i', 'typedoc'])
+        await exec('npm', ['install', 'typedoc'])
 
         if (theme) {
             templateName = await installTemplate(theme)
         }
 
         const cmd = 'npx typedoc'
-        const args = []
+
+        const args = ['--logLevel','Info']
 
 
         const srcPath = path.join(GITHUB_WORKSPACE, source_dir)
         args.push(srcPath)
+        info('📂 Source directory: ' + srcPath)
+        await exec('ls', [ '-la', srcPath ])
 
         if (output_dir) {
             args.push('--out', path.join(GITHUB_WORKSPACE, output_dir))

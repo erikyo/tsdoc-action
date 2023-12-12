@@ -19,7 +19,7 @@
     "lint": "eslint ./src --fix",
     "package": "ncc build src/index.ts -o lib --license LICENSE",
     "prepare": "husky install",
-    "tsdoc": "npx typedoc src/*"
+    "tsdoc": "npx typedoc ./src"
   },
   "repository": {
     "type": "git",

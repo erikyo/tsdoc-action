@@ -30,7 +30,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
           cache: "npm"
 
       - run: npm install
@@ -41,6 +41,7 @@ jobs:
           source_dir: ./src
           output_dir: ./docs
           front_page: README.md
+          theme: typedoc-material-theme
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
