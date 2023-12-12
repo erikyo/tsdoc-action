@@ -46,7 +46,7 @@ async function run(): Promise<string> {
          * Parse the inputs.
          */
         const options = getInput('options')
-        const tsconfig = getInput('tsconfig') || 'tsconfig.json'
+        const tsconfig = getInput('tsconfig')
         const entryPointStrategy = getInput('entryPointStrategy')
         const resolveEntrypoints = entryPointStrategy === 'resolve'
         const packagesEntrypoints = entryPointStrategy === 'packages'
