@@ -1,10 +1,10 @@
 # tsdoc-action
 
-> A GitHub Action to build TypeDoc documentation
+> A package for generating documentation for TypeScript / JavaScript projects.
 
 This is a GitHub Action to build your TypeScript documentation with [TypeDoc](https://typedoc.org/). This action can easily be combined with other deployment actions, in order to publish the generated documentation to, for example, [GitHub Pages](https://pages.github.com). TypeDoc [templates](https://typedoc.org/guides/options/) are also supported.
 
-This action is a fork of the [jsdoc-action](https://github.com/andstor/jsdoc-action) by [André Storhaug](https://github.com/andstor).
+This action is inspired by [andstor/jsdoc-action](https://github.com/andstor/jsdoc-action) by [André Storhaug](https://github.com/andstor).
 
 The following example [workflow step](https://help.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow) will generate documentation for all source files in the `./src` directory and output the built files to the `./out` directory.
 
